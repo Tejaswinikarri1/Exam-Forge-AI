@@ -92,9 +92,6 @@ const Dashboard = ({user,onNav,onStartTest}) => {
           <h1 style={{fontFamily:"'Fraunces',serif",fontSize:26,fontWeight:700,lineHeight:1.2}}>Welcome back, {user?.name?.split(' ')[0]||'there'} 👋</h1>
           <p style={{color:T.textMuted,fontSize:13,marginTop:5}}>{dayLabel()} · {hasData?`${A.totalAttempts} exam${A.totalAttempts!==1?'s':''} completed`:'No exams completed yet'}</p>
         </div>
-        <button onClick={()=>onNav('create')} style={{background:'linear-gradient(135deg,#7C6BF5,#5B4ED4)',color:'#fff',border:'none',borderRadius:10,padding:'11px 22px',fontSize:13,fontWeight:700,cursor:'pointer',display:'flex',alignItems:'center',gap:8,boxShadow:'0 4px 16px #7C6BF544'}} onMouseEnter={e=>e.currentTarget.style.filter='brightness(1.1)'} onMouseLeave={e=>e.currentTarget.style.filter='none'}>
-          <Cpu size={15}/>Create AI Exam
-        </button>
       </div>
       <div style={{display:'grid',gridTemplateColumns:'repeat(6,1fr)',gap:12,marginBottom:22}}>
         {STATS.map(s=><StatCard key={s.label} label={s.label} value={s.value} delta={s.delta} deltaUp={s.deltaUp} sub={s.sub} subColor={s.subColor} icon={s.I} topColor={s.c}/>)}

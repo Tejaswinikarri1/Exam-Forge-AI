@@ -1,7 +1,17 @@
 const express = require('express');
 const router = express.Router();
-const { protect } = require('../middleware/auth');
+const { protect, requireRole } = require('../middleware/auth');
 const Attempt = require('../models/Attempt');
+
+// GET /api/attempts/all-students - get all attempts for all students (Teacher only)
+router.get('/all-students', protect, requireRole('Teacher'), async (req, res) => {
+  try {
+    const allAttempts = await Attempt.find().sort({ createdAt: -1 }).populate('user', 'name email role');
+    res.json({ success: true, attempts: allAttempts });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
 
 // GET /api/attempts
 router.get('/', protect, async (req, res) => {

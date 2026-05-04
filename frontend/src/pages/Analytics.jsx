@@ -44,15 +44,25 @@ const SkillMeter = ({label,value,color}) => (
   </div>
 );
 
-const Analytics = () => {
+const Analytics = ({user}) => {
   const [data,setData]=useState(null);const [loading,setLoading]=useState(true);
   useEffect(()=>{
-    Promise.all([api.get('/attempts'),api.get('/attempts/analytics')]).then(([att,ana])=>{
-      const attempts=att.data.attempts||[];
-      const A=computeAnalytics(attempts);
-      setData({...A,...(ana.data.analytics||{}),attempts});setLoading(false);
-    }).catch(()=>setLoading(false));
-  },[]);
+    const isTeacher = user?.role === 'Teacher';
+    if(isTeacher) {
+      api.get('/attempts/all-students').then(res=>{
+        const attempts=res.data.attempts||[];
+        const A=computeAnalytics(attempts);
+        setData({...A,attempts});
+        setLoading(false);
+      }).catch(()=>setLoading(false));
+    } else {
+      Promise.all([api.get('/attempts'),api.get('/attempts/analytics')]).then(([att,ana])=>{
+        const attempts=att.data.attempts||[];
+        const A=computeAnalytics(attempts);
+        setData({...A,...(ana.data.analytics||{}),attempts});setLoading(false);
+      }).catch(()=>setLoading(false));
+    }
+  },[user]);
   if(loading) return <div style={{display:'flex',alignItems:'center',justifyContent:'center',height:300,gap:12,color:T.textMuted}}><Spin/>Loading analytics...</div>;
 
   const noData = !data?.hasData;
@@ -71,8 +81,8 @@ const Analytics = () => {
 
       <div style={{display:'flex',justifyContent:'space-between',alignItems:'flex-start',marginBottom:16}}>
         <div>
-          <h1 style={{fontFamily:"'Fraunces',serif",fontSize:26,fontWeight:600}}>Performance Analytics</h1>
-          <p style={{color:T.textMuted,fontSize:13,marginTop:4}}>Deep insights into your learning journey</p>
+          <h1 style={{fontFamily:"'Fraunces',serif",fontSize:26,fontWeight:600}}>All Students Exam Analytics</h1>
+          <p style={{color:T.textMuted,fontSize:13,marginTop:4}}>Comprehensive insights into all student performance</p>
         </div>
         <div style={{display:'flex',gap:8,flexWrap:'wrap',justifyContent:'flex-end'}}>
           <button onClick={()=>exportCSV(data.attempts || [], 'analytics')} title="Download CSV spreadsheet" style={{background:T.surface,border:`1px solid ${T.border}`,borderRadius:8,padding:'8px 15px',fontSize:12,fontWeight:600,color:T.textPrimary,cursor:'pointer',display:'flex',alignItems:'center',gap:6,transition:'0.18s'}}>

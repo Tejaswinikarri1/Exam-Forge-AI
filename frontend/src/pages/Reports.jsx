@@ -72,14 +72,26 @@ const Reports = ({user}) => {
   // Always fetch fresh data from backend API on mount and when switching tabs
   const fetchReportsData = () => {
     setLoading(true);
-    Promise.all([api.get('/attempts'), api.get('/attempts/analytics')])
-      .then(([att, ana]) => {
-        const a = att.data.attempts || [];
-        setAttempts(a);
-        setAnalytics(computeAnalytics(a));
-        setLoading(false);
-      })
-      .catch(() => setLoading(false));
+    const isTeacher = user?.role === 'Teacher';
+    if(isTeacher) {
+      api.get('/attempts/all-students')
+        .then(res => {
+          const allAttempts = res.data.attempts || [];
+          setAttempts(allAttempts);
+          setAnalytics(computeAnalytics(allAttempts));
+          setLoading(false);
+        })
+        .catch(() => setLoading(false));
+    } else {
+      Promise.all([api.get('/attempts'), api.get('/attempts/analytics')])
+        .then(([att, ana]) => {
+          const a = att.data.attempts || [];
+          setAttempts(a);
+          setAnalytics(computeAnalytics(a));
+          setLoading(false);
+        })
+        .catch(() => setLoading(false));
+    }
   };
 
   useEffect(() => {
@@ -98,7 +110,7 @@ const Reports = ({user}) => {
     <div className='fu'>
       <div style={{marginBottom:22,display:'flex',justifyContent:'space-between',alignItems:'flex-start'}}>
         <div>
-          <h1 style={{fontFamily:"'Fraunces',serif",fontSize:26,fontWeight:600}}>AI Recommendations</h1>
+          <h1 style={{fontFamily:"'Fraunces',serif",fontSize:26,fontWeight:600}}>All Students Exam Analytics</h1>
           <p style={{color:T.textMuted,fontSize:13,marginTop:4}}>Powered by Groq AI · Based on {attempts.length} test{attempts.length!==1?'s':''}</p>
         </div>
         <div style={{display:'flex',gap:8}}>

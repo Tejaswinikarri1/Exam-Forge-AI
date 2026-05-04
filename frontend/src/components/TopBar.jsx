@@ -26,7 +26,7 @@ const TopBar = ({user,sw,onNav}) => {
                 <div style={{fontWeight:700,fontSize:14}}>{user?.name}</div>
                 <div style={{fontSize:11,color:T.textDim,fontFamily:"'IBM Plex Mono',monospace",marginTop:3}}>{user?.email}</div>
               </div>
-              <div onClick={()=>setOpen(false)} style={{display:'flex',alignItems:'center',gap:12,padding:'11px 16px',cursor:'pointer',color:T.textMuted,fontSize:13}} onMouseEnter={e=>e.currentTarget.style.background=T.surfaceAlt} onMouseLeave={e=>e.currentTarget.style.background='transparent'}><User size={14} color={T.accent}/>View Profile</div>
+              {/* <div onClick={()=>setOpen(false)} style={{display:'flex',alignItems:'center',gap:12,padding:'11px 16px',cursor:'pointer',color:T.textMuted,fontSize:13}} onMouseEnter={e=>e.currentTarget.style.background=T.surfaceAlt} onMouseLeave={e=>e.currentTarget.style.background='transparent'}><User size={14} color={T.accent}/>View Profile</div> */}
               <div onClick={()=>{setOpen(false);onNav('__logout__');}} style={{display:'flex',alignItems:'center',gap:12,padding:'11px 16px',cursor:'pointer',color:T.danger,fontSize:13,borderTop:`1px solid ${T.border}`}} onMouseEnter={e=>e.currentTarget.style.background=T.dangerDim} onMouseLeave={e=>e.currentTarget.style.background='transparent'}><LogOut size={14}/>Logout</div>
             </div>
           )}
